@@ -1,6 +1,6 @@
 ## How to Build and Run the Project  
 
-### 1. Open the Project in Visual Studio Code  
+### 1. Open the Project in Visual Studio Code (or other preferred IDEs)
 - Ensure you have **VS Code** installed.  
 - Open the project folder in **VS Code**.  
 
