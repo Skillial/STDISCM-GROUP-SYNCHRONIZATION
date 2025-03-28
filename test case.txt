@@ -1,0 +1,31 @@
+test case 1
+n 4294967296
+t 100
+h 100
+d 100
+t1 1
+t2 1
+
+test case 2
+n 4294967295
+t 100
+h 100
+d 100
+t1 1
+t2 1
+
+test case 3
+n 2
+t 30
+h 30
+d 30
+t1 1
+t2 1
+
+test case 4
+n 10
+t 100
+h 100
+d 100
+t1 1
+t2 15
