@@ -19,9 +19,6 @@ using namespace std;
 mutex mtx;
 condition_variable cv;
 map<uint32_t, atomic<bool>> dungeonMap;
-map<uint32_t, uint32_t> dungeonUsage;
-map<uint32_t, uint32_t> dungeonTimeUsed;
-
 const set<string> validKeys = {"n", "t", "h", "d", "t1", "t2"};
 
 bool isValidUInt(const string &str)
@@ -108,11 +105,11 @@ void printStatus()
     }
 }
 
-void dungeonInstance(uint32_t id, uint32_t duration, atomic<uint32_t> &totalServed, atomic<uint32_t> &totalTime)
+void dungeonInstance(uint32_t id, uint32_t duration, atomic<uint32_t> &totalServed, atomic<uint32_t> &totalTime,
+                      map<uint32_t, uint32_t> &dungeonUsage, map<uint32_t, uint32_t> &dungeonTimeUsed)
 {
     {
         lock_guard<mutex> lock(mtx);
-
         totalServed++;
         totalTime += duration;
         dungeonUsage[id]++;
@@ -147,6 +144,8 @@ int main()
 
     atomic<uint32_t> totalServed(0);
     atomic<uint32_t> totalTime(0);
+    map<uint32_t, uint32_t> dungeonUsage;
+    map<uint32_t, uint32_t> dungeonTimeUsed;
 
     vector<thread> activeThreads;
     random_device rd;
@@ -161,7 +160,6 @@ int main()
         dungeonUsage[i] = 0;
         dungeonTimeUsed[i] = 0;
     }
-
 
     uint32_t lastUsedDungeon = -1;
     for (uint32_t i = 0; i < numParties; i++)
@@ -179,7 +177,7 @@ int main()
         uint32_t dungeonID = lastUsedDungeon;
         for (uint32_t j = 1; j <= threadsToSpawn; j++)
         {
-            uint32_t index = ((lastUsedDungeon + j) % threadsToSpawn) + 1; 
+            uint32_t index = ((lastUsedDungeon + j) % threadsToSpawn) + 1;
             if (!dungeonMap[index])
             {
                 dungeonID = index;
@@ -189,7 +187,7 @@ int main()
             }
         }
         printStatus();
-        activeThreads.emplace_back(dungeonInstance, dungeonID, duration, ref(totalServed), ref(totalTime));
+        activeThreads.emplace_back(dungeonInstance, dungeonID, duration, ref(totalServed), ref(totalTime), ref(dungeonUsage), ref(dungeonTimeUsed));
         lock.unlock();
     }
 
