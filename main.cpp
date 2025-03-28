@@ -69,7 +69,6 @@ bool readConfig(map<string, uint32_t> &config, const string &filename)
         }
     }
     inputFile.close();
-
     if (config.size() != validKeys.size())
     {
         cerr << "Error: Missing required keys." << endl;
@@ -89,6 +88,11 @@ bool readConfig(map<string, uint32_t> &config, const string &filename)
     if (config["t2"] > 15)
     {
         cerr << "Error: t2 cannot be greater than 15." << endl;
+        return false;
+    }
+    if (config["n"] == 0)
+    {
+        cerr << "Error: Number of threads cannot be zero." << endl;
         return false;
     }
 
